@@ -9,7 +9,7 @@ This guide breaks down a demo using a custom C++ memory allocator within the Spa
 
 Introduction
 ------------
-Within the Demos section of the Space ROS ecosystem there is an `example <https://github.com/space-ros/demos/tree/main/space_ros_memory_allocation_demo/>`__ of using C++17 style allocators with Space ROS.
+Within the Demos section of the Space ROS ecosystem there is an `example <https://github.com/space-ros/demos/tree/main/space_ros_memory_allocation_demo/>`__of using C++17 style allocators with Space ROS.
 During the release of C++17, developers of the C++ STL felt it would be important to increase one's ability to allocate memory dynamically opposed to strictly staticly. Thus they created the `polymorphic_allocator <https://en.cppreference.com/w/cpp/memory/polymorphic_allocator/>`__which had different allocation behavior. We are able to use various customizable allocation methods within a common type.
 
 Running the Demo

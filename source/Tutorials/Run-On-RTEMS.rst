@@ -28,6 +28,7 @@ Build
 To simplify collecting and compiling dependencies on a wide range of systems, we have created a Docker container that contains everything.
 
 .. code-block:: console
+
     cd /path/to/zynq_rtems
     ./build_dependencies.sh
 
@@ -37,6 +38,7 @@ This will typically take at least 10 minutes, and can take much longer if either
 Next, we will use this "container full of dependencies" to compile a sample application.
 
 .. code-block:: console
+
     cd /path/to/zynq_rtems
     ./compile_demos.sh
 
@@ -49,35 +51,48 @@ Run
 The emulated system that will run inside QEMU needs to have a way to talk to a virtual network segment on the host machine.
 We'll create a TAP device for this.
 The following script will set this up, creating a virtual `10.0.42.x` subnet for a device named `tap0`:
+
 .. code-block:: console
+
     ./start_network_tap.sh
+
 We will need three terminals for this demo:
  * Zenoh router
  * Zenoh subscriber
  * Zenoh-Pico publisher (in RTEMS in QEMU)
 
 First, we will start a Zenoh router:
+
 .. code-block:: console
+
     cd /path/to/zynq_rtems
     cd hello_zenoh
     ./run_zenoh_router
+
 This will print a bunch of startup information and then continue running silently, waiting for inbound Zenoh traffic. Leave this terminal running.
 
 In the second terminal, we'll run the Zenoh subscriber example:
+
 .. code-block:: console
+
     cd /path/to/zynq_rtems
     cd hello_zenoh
     ./run_zenoh_subscriber
+
 In the third terminal, we will run the RTEMS-based application, which will communicate with the Zenoh router and thence to the Zenoh subscriber.
 The following script will run QEMU inside the container, with a volume-mount of the `hello_zenoh` demo application so that the build products from the previous step are made available to the QEMU that was built inside the container.
+
 .. code-block:: console
+
     cd /path/to/zynq_rtems
     cd hello_zenoh
     ./run_rtems.sh
+
 The terminal should print a bunch of information about the various emulated Zynq network interfaces and their routing information.
 After that, it should contact the `zenohd` instance running in the other terminal. It should print something like this:
 
 .. code-block:: console
+
     Opening zenoh session...
     Zenoh session opened.
     Own ID: 0000000000000000F45E7E462568C23B
@@ -98,9 +113,11 @@ After that, it should contact the `zenohd` instance running in the other termina
     publishing: Hello, world! 9
     Closing zenoh session...
     Done. Goodbye.
+
 The second terminal, running a Zenoh example subscriber, should print something like this:
 
 .. code-block:: console
+
     Declaring Subscriber on 'example'...
     [2022-12-06T21:41:11Z DEBUG zenoh::net::routing::resource] Register resource example
     [2022-12-06T21:41:11Z DEBUG zenoh::net::routing::pubsub] Register client subscription
@@ -117,6 +134,7 @@ The second terminal, running a Zenoh example subscriber, should print something 
     >> [Subscriber] Received PUT ('example': 'Hello, world! 7')
     >> [Subscriber] Received PUT ('example': 'Hello, world! 8')
     >> [Subscriber] Received PUT ('example': 'Hello, world! 9')
+
 After that output, the RTEMS shutdown will display the various RTEMS threads running and their memory usage.
 
 This showed that the Zenoh Pico client running in RTEMS successfully reached the Zenoh router running natively on the host.
@@ -127,5 +145,7 @@ Clean up
 -------------
 
 If you would like, you can now remove the network tap device that we created in the previous step:
+
 .. code-block:: console
+
     zynq_rtems/stop_network_tap.sh
